@@ -85,6 +85,17 @@ public class ProductRepository : IProductRepository
         return result;
     }
 
+    public async Task<Product> GetByIdWithEFCoreAsNoTrackingAsync(long id)
+    {
+        using var context = _databaseFactory.CreateEFCoreContext();
+
+        var query = context.Products.Where(product => product.Id == id);
+
+        var result = await query.AsNoTracking().FirstOrDefaultAsync();
+
+        return result;
+    }
+
     public async Task<Product> GetByIdWithDapperAsync(long id)
     {
         var query = "SELECT Name, Description, Quantity, Price, CreatedOnUtc, UpdatedOnUtc FROM Products WHERE Id = @Id;";
@@ -180,5 +191,41 @@ public class ProductRepository : IProductRepository
         return (pagedProducts, totalCount);
     }
 
-  
+    public async Task<(IReadOnlyList<Product?>, int TotalRecords)> FindWithFilterWithEFCoreAsNoTrackingAsync(string keyword, string orderBy, int page = 1, int pageSize = 10)
+    {
+        using var context = _databaseFactory.CreateEFCoreContext();
+
+        IQueryable<Product> query = context.Set<Product>();
+
+
+        if (!string.IsNullOrEmpty(keyword))
+        {
+            query = query.Where(p => EF.Functions.Like(p.Name, $"{keyword}"));
+        }
+
+        var totalCount = await query.CountAsync();
+
+        if (!string.IsNullOrEmpty(orderBy))
+        {
+            if (orderBy == "created_on")
+            {
+                query = query.OrderBy(p => p.CreatedOnUtc);
+            }
+            else if (orderBy == "price_desc")
+            {
+                query = query.OrderByDescending(p => p.Price);
+            }
+            else if (orderBy == "price_asc")
+            {
+                query = query.OrderBy(p => p.Price);
+            }
+        }
+
+        var pagedProducts = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize).AsNoTracking()
+            .ToListAsync();
+
+        return (pagedProducts, totalCount);
+    }
 }

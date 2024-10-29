@@ -8,7 +8,11 @@ public interface IProductRepository
     Task InsertAsync();
     Task<Product> GetByIdWithDapperAsync(long id);
     Task<Product> GetByIdWithEFCoreAsync(long id);
+    Task<Product> GetByIdWithEFCoreAsNoTrackingAsync(long id);
     Task<(IReadOnlyList<Product?>, int TotalRecords)> FindWithFilterWithEFCoreAsync(string keyword, string orderBy,
+                                                        int page = 1,
+                                                        int pageSize = 10);
+    Task<(IReadOnlyList<Product?>, int TotalRecords)> FindWithFilterWithEFCoreAsNoTrackingAsync(string keyword, string orderBy,
                                                         int page = 1,
                                                         int pageSize = 10);
     Task<(IReadOnlyList<Product?>, int TotalRecords)> FindWithFilterWithDapperAsync(string keyword, string orderBy,

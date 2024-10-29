@@ -39,6 +39,16 @@ public class BenchmarkEFCoreDapper
         }
     }
 
+
+    [Benchmark]
+    public async Task GetByIdWithEFCoreAsNoTrackingAsync()
+    {
+        for (int i = 0; i < numberOfIterations; i++)
+        {
+            await _productRepository.GetByIdWithEFCoreAsNoTrackingAsync(50);
+        }
+    }
+
     [Benchmark]
     public async Task InsertProductWithDapperAsync()
     {
@@ -73,6 +83,15 @@ public class BenchmarkEFCoreDapper
         for (int i = 0; i < numberOfIterations; i++)
         {
             await _productRepository.FindWithFilterWithEFCoreAsync("%New%", "price_desc", 1, 25);
+        }
+    }
+
+    [Benchmark]
+    public async Task FindWithFilterWithEFCoreAsNoTrackingAsync()
+    {
+        for (int i = 0; i < numberOfIterations; i++)
+        {
+            await _productRepository.FindWithFilterWithEFCoreAsNoTrackingAsync("%New%", "price_desc", 1, 25);
         }
     }
 }
