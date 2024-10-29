@@ -63,7 +63,7 @@ public class BenchmarkEFCoreDapper
     {
         for (int i = 0; i < numberOfIterations; i++)
         {
-            await _productRepository.FindWithFilterWithDapperAsync("New", "price_desc", 1, 100);
+            await _productRepository.FindWithFilterWithDapperAsync("%New%", "price_desc", 1, 25);
         }
     }
 
@@ -72,7 +72,7 @@ public class BenchmarkEFCoreDapper
     {
         for (int i = 0; i < numberOfIterations; i++)
         {
-            await _productRepository.FindWithFilterWithEFCoreAsync("New", "price_desc", 1, 100);
+            await _productRepository.FindWithFilterWithEFCoreAsync("%New%", "price_desc", 1, 25);
         }
     }
 }

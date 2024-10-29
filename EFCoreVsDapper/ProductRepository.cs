@@ -23,7 +23,7 @@ public class ProductRepository : IProductRepository
 
         var products = new List<Product>();
 
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 10000; i++)
         {
             var name = faker.Commerce.ProductName();
             var description = faker.Commerce.ProductAdjective();
@@ -107,7 +107,7 @@ public class ProductRepository : IProductRepository
 
         if (!string.IsNullOrEmpty(keyword))
         {
-            queryBuilder.Append("WHERE Name = @Keyword ");
+            queryBuilder.Append("WHERE Name LIKE @Keyword ");
         }
 
         if (!string.IsNullOrEmpty(orderBy))
@@ -131,7 +131,7 @@ public class ProductRepository : IProductRepository
 
 
         var countQuery = "SELECT COUNT(1) FROM Products " +
-                         (string.IsNullOrEmpty(keyword) ? "" : "WHERE Name = @Keyword");
+                         (string.IsNullOrEmpty(keyword) ? "" : "WHERE Name LIKE @Keyword");
 
         using var connection = _databaseFactory.CreateDapperConnection();
 
@@ -151,7 +151,7 @@ public class ProductRepository : IProductRepository
 
         if (!string.IsNullOrEmpty(keyword))
         {
-            query = query.Where(p => p.Name == keyword);
+            query = query.Where(p => EF.Functions.Like(p.Name, $"{keyword}"));
         }
 
         var totalCount = await query.CountAsync();
