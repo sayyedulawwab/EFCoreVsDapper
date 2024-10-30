@@ -1,6 +1,6 @@
 # EFCoreVsDapper
 
-I am benchmarking EFCore and Dapper
+I am benchmarking EFCore and Dapper with 1 Million records in a product table with SQL Server Database.
 
 ## Summary
 
