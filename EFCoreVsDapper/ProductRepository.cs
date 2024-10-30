@@ -12,7 +12,7 @@ public class ProductRepository : IProductRepository
     public ProductRepository(IDatabaseConnectionFactory databaseFactory)
     {
         _databaseFactory = databaseFactory;
-        _timeoutInSeconds = 300;
+        _timeoutInSeconds = 600;
     }   
 
     public async Task InsertAsync()
@@ -26,40 +26,40 @@ public class ProductRepository : IProductRepository
 
         var products = new List<Product>();
 
-        Parallel.For(0, 1_000_000, i =>
-        {
-            lock (products)
-            {
-                products.Add(new Product
-                {
-                    Name = faker.Commerce.ProductName(),
-                    Description = faker.Commerce.ProductAdjective(),
-                    Quantity = faker.Random.Number(1, 100),
-                    Price = faker.Finance.Amount(25, 2000, 2),
-                    CreatedOnUtc = DateTime.UtcNow,
-                });
-            }
-        });
-
-        //for (int i = 0; i < 1_000_000; i++)
+        //Parallel.For(0, 1_000_000, i =>
         //{
-        //    var name = faker.Commerce.ProductName();
-        //    var description = faker.Commerce.ProductAdjective();
-        //    var quantity = faker.Random.Number(1, 100);
-        //    var price = faker.Finance.Amount(25, 2000, 2);
-           
-
-        //    var product = new Product()
+        //    lock (products)
         //    {
-        //        Name = name,
-        //        Description = description,
-        //        Quantity = quantity,
-        //        Price = price,
-        //        CreatedOnUtc = DateTime.UtcNow,
-        //    };
+        //        products.Add(new Product
+        //        {
+        //            Name = faker.Commerce.ProductName(),
+        //            Description = faker.Commerce.ProductAdjective(),
+        //            Quantity = faker.Random.Number(1, 100),
+        //            Price = faker.Finance.Amount(25, 2000, 2),
+        //            CreatedOnUtc = DateTime.UtcNow,
+        //        });
+        //    }
+        //});
 
-        //    products.Add(product);
-        //}
+        for (int i = 0; i < 1_000_000; i++)
+        {
+            var name = faker.Commerce.ProductName();
+            var description = faker.Commerce.ProductAdjective();
+            var quantity = faker.Random.Number(1, 100);
+            var price = faker.Finance.Amount(25, 2000, 2);
+
+
+            var product = new Product()
+            {
+                Name = name,
+                Description = description,
+                Quantity = quantity,
+                Price = price,
+                CreatedOnUtc = DateTime.UtcNow,
+            };
+
+            products.Add(product);
+        }
 
         int batchSize = 10_000;
         for (int i = 0; i < products.Count; i += batchSize)

@@ -98,31 +98,31 @@ public class BenchmarkEFCoreDapper
     }
 
 
-    //[Benchmark]
-    //public async Task FindWithFilterOrderByGroupByHavingPaginationWithDapperAsync()
-    //{
-    //    for (int i = 0; i < numberOfIterations; i++)
-    //    {
-    //        await _productRepository.FindWithFilterOrderByGroupByHavingPaginationWithDapperAsync("price_desc", 1, 50, 75, 1000);
-    //    }
-    //}
+    [Benchmark]
+    public async Task FindWithFilterOrderByGroupByHavingPaginationWithDapperAsync()
+    {
+        for (int i = 0; i < numberOfIterations; i++)
+        {
+            await _productRepository.FindWithFilterOrderByGroupByHavingPaginationWithDapperAsync("price_desc", 1, 50, 75, 1000);
+        }
+    }
 
-    //[Benchmark]
-    //public async Task FindWithFilterOrderByGroupByHavingPaginationWithEFCoreAsync()
-    //{
-    //    for (int i = 0; i < numberOfIterations; i++)
-    //    {
-    //        await _productRepository.FindWithFilterOrderByGroupByHavingPaginationWithEFCoreAsync("price_desc", 1, 50, 75, 1000);
-    //    }
-    //}
+    [Benchmark]
+    public async Task FindWithFilterOrderByGroupByHavingPaginationWithEFCoreAsync()
+    {
+        for (int i = 0; i < numberOfIterations; i++)
+        {
+            await _productRepository.FindWithFilterOrderByGroupByHavingPaginationWithEFCoreAsync("price_desc", 1, 50, 75, 1000);
+        }
+    }
 
-    //[Benchmark]
-    //public async Task FindWithFilterWithOrderByGroupByHavingPaginationWithEFCoreAsNoTrackingAsync()
-    //{
-    //    for (int i = 0; i < numberOfIterations; i++)
-    //    {
-    //        await _productRepository.FindWithFilterWithOrderByGroupByHavingPaginationWithEFCoreAsNoTrackingAsync("price_desc", 1, 50, 75, 1000);
-    //    }
-    //}
+    [Benchmark]
+    public async Task FindWithFilterWithOrderByGroupByHavingPaginationWithEFCoreAsNoTrackingAsync()
+    {
+        for (int i = 0; i < numberOfIterations; i++)
+        {
+            await _productRepository.FindWithFilterWithOrderByGroupByHavingPaginationWithEFCoreAsNoTrackingAsync("price_desc", 1, 50, 75, 1000);
+        }
+    }
 }
 
