@@ -6,6 +6,8 @@ public interface IProductRepository
 {
     Task DeleteAllAsync();
     Task InsertAsync();
+
+    Task CleanUpInsertedManually();
     Task<Product> GetByIdWithDapperAsync(long id);
     Task<Product> GetByIdWithEFCoreAsync(long id);
     Task<Product> GetByIdWithEFCoreAsNoTrackingAsync(long id);

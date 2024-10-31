@@ -80,6 +80,14 @@ public class ProductRepository : IProductRepository
         await connection.ExecuteAsync("TRUNCATE TABLE Products;");
     }
 
+    public async Task CleanUpInsertedManually()
+    {
+        using var connection = _databaseFactory.CreateDapperConnection();
+
+
+        await connection.ExecuteAsync("DELETE FROM Products WHERE Name = 'New product';");
+    }
+
 
     public async Task InsertProductWithEFCoreAsync(string name, string description, int quantity, decimal price, DateTime createdOnUtc)
     {
@@ -214,7 +222,6 @@ public class ProductRepository : IProductRepository
         return (products.ToList(), totalRecords);
     }
 
-
     public async Task<(IReadOnlyList<Product?>, int TotalRecords)> FindWithFilterOrderByPaginationWithEFCoreAsync(string orderBy, int page = 1, int pageSize = 10,
                                                                                                  decimal? minPrice = null, decimal? maxPrice = null)
     {
@@ -222,9 +229,8 @@ public class ProductRepository : IProductRepository
 
         context.Database.SetCommandTimeout(TimeSpan.FromSeconds(_timeoutInSeconds));
 
-        // Base query using self-join with LINQ
-        var query = from p1 in context.Set<Product>()
-                    select p1;
+
+        var query = context.Set<Product>().AsQueryable();
 
         if (minPrice.HasValue)
         {
@@ -267,9 +273,7 @@ public class ProductRepository : IProductRepository
 
         context.Database.SetCommandTimeout(TimeSpan.FromSeconds(_timeoutInSeconds));
 
-        // Base query using self-join with LINQ
-        var query = from p1 in context.Set<Product>().AsNoTracking()
-                    select p1;
+        var query = context.Set<Product>().AsQueryable().AsNoTracking();
 
         if (minPrice.HasValue)
         {
@@ -304,8 +308,6 @@ public class ProductRepository : IProductRepository
 
         return (pagedProducts, totalCount);
     }
-
-
 
     public async Task<(IReadOnlyList<Product?>, int TotalRecords)> FindWithFilterOrderByGroupByHavingPaginationWithDapperAsync(string orderBy, int page = 1, int pageSize = 10,
                                                                                                 decimal? minPrice = null, decimal? maxPrice = null)
@@ -394,10 +396,52 @@ public class ProductRepository : IProductRepository
         context.Database.SetCommandTimeout(TimeSpan.FromSeconds(_timeoutInSeconds));
 
         // Base query using self-join with LINQ
-        var query = from p1 in context.Set<Product>()
-                    join p2 in context.Set<Product>() on p1.Name equals p2.Name
-                    where p1.Id != p2.Id // Avoid self-matching by ID
-                    select p1;
+        //var query = from p1 in context.Set<Product>()
+        //            join p2 in context.Set<Product>() on p1.Name equals p2.Name
+        //            where p1.Id != p2.Id // Avoid self-matching by ID
+        //            select p1;
+
+        //var query = context.Products
+        //    .Join(context.Products, pr => pr.Name, pr2 => pr2.Name, (pr, pr2) => 
+        //    new { pr, pr2 } )
+        //    .SelectMany(p => (p.pr is not null && p.pr2 is not null) && p.pr.Id != p.pr2.Id, (p1, p2) => new Product 
+        //            {
+
+        //                Id = p1.pr.Id,
+        //                Name = p1.pr.Name,
+        //                Description = p1.pr.Description,
+        //                Quantity = p1.pr.Quantity,
+        //                Price = p1.pr.Price,
+        //                CreatedOnUtc = p1.pr.CreatedOnUtc,
+        //                UpdatedOnUtc = p1.pr.UpdatedOnUtc
+
+        //            });
+
+        var query = context.Products
+                    .Join(context.Products,
+                          pr => pr.Name,
+                          pr2 => pr2.Name,
+                          (pr, pr2) => new { pr, pr2 })
+                    .Where(p => p.pr != null && p.pr2 != null && p.pr.Id != p.pr2.Id)
+                    .Select(p => new Product
+                    {
+                        Id = p.pr.Id,
+                        Name = p.pr.Name,
+                        Description = p.pr.Description,
+                        Quantity = p.pr.Quantity,
+                        Price = p.pr.Price,
+                        CreatedOnUtc = p.pr.CreatedOnUtc,
+                        UpdatedOnUtc = p.pr.UpdatedOnUtc
+                    });
+
+
+
+        //var query = db.Category.GroupJoin(db.Category, c1 => c1.CategoryID, c2 => c2.ParentCategoryID, (c1, childCategories) =>
+        //            new
+        //            { c1, childCategories }).SelectMany(x => x.childCategories.DefaultIfEmpty(), (x, cc) =>
+        //            new
+        //            CategoryObject
+        //            { CategoryID = x.c1.CategoryID, ChildName = cc?.CategoryName });
 
         if (minPrice.HasValue)
         {

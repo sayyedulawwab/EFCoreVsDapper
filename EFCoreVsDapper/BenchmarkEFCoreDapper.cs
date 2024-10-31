@@ -21,7 +21,7 @@ public class BenchmarkEFCoreDapper
         _productRepository = serviceProvider.GetService<IProductRepository>();
     }
 
-    int numberOfIterations = 50;
+    int numberOfIterations = 1;
 
     [Benchmark]
     public async Task GetByIdWithDapperAsync()
@@ -51,23 +51,6 @@ public class BenchmarkEFCoreDapper
         }
     }
 
-    [Benchmark]
-    public async Task InsertProductWithDapperAsync()
-    {
-        for (int i = 0; i < numberOfIterations; i++)
-        {
-            await _productRepository.InsertProductWithDapperAsync("New product", "New product description .......... ", 50, 150, DateTime.UtcNow);
-        }
-    }
-
-    [Benchmark]
-    public async Task InsertProductWithEFCoreAsync()
-    {
-        for (int i = 0; i < numberOfIterations; i++)
-        {
-            await _productRepository.InsertProductWithEFCoreAsync("New product", "New product description .......... ", 50, 150, DateTime.UtcNow);
-        }
-    }
 
 
     [Benchmark]
@@ -98,30 +81,49 @@ public class BenchmarkEFCoreDapper
     }
 
 
+    //[Benchmark]
+    //public async Task FindWithFilterOrderByGroupByHavingPaginationWithDapperAsync()
+    //{
+    //    for (int i = 0; i < numberOfIterations; i++)
+    //    {
+    //        await _productRepository.FindWithFilterOrderByGroupByHavingPaginationWithDapperAsync("price_desc", 1, 50, 75, 1000);
+    //    }
+    //}
+
+    //[Benchmark]
+    //public async Task FindWithFilterOrderByGroupByHavingPaginationWithEFCoreAsync()
+    //{
+    //    for (int i = 0; i < numberOfIterations; i++)
+    //    {
+    //        await _productRepository.FindWithFilterOrderByGroupByHavingPaginationWithEFCoreAsync("price_desc", 1, 50, 75, 1000);
+    //    }
+    //}
+
+    //[Benchmark]
+    //public async Task FindWithFilterWithOrderByGroupByHavingPaginationWithEFCoreAsNoTrackingAsync()
+    //{
+    //    for (int i = 0; i < numberOfIterations; i++)
+    //    {
+    //        await _productRepository.FindWithFilterWithOrderByGroupByHavingPaginationWithEFCoreAsNoTrackingAsync("price_desc", 1, 50, 75, 1000);
+    //    }
+    //}
+
+
     [Benchmark]
-    public async Task FindWithFilterOrderByGroupByHavingPaginationWithDapperAsync()
+    public async Task InsertProductWithDapperAsync()
     {
         for (int i = 0; i < numberOfIterations; i++)
         {
-            await _productRepository.FindWithFilterOrderByGroupByHavingPaginationWithDapperAsync("price_desc", 1, 50, 75, 1000);
+            await _productRepository.InsertProductWithDapperAsync("New product", "New product description .......... ", 50, 150, DateTime.UtcNow);
         }
     }
 
     [Benchmark]
-    public async Task FindWithFilterOrderByGroupByHavingPaginationWithEFCoreAsync()
+    public async Task InsertProductWithEFCoreAsync()
     {
         for (int i = 0; i < numberOfIterations; i++)
         {
-            await _productRepository.FindWithFilterOrderByGroupByHavingPaginationWithEFCoreAsync("price_desc", 1, 50, 75, 1000);
-        }
-    }
-
-    [Benchmark]
-    public async Task FindWithFilterWithOrderByGroupByHavingPaginationWithEFCoreAsNoTrackingAsync()
-    {
-        for (int i = 0; i < numberOfIterations; i++)
-        {
-            await _productRepository.FindWithFilterWithOrderByGroupByHavingPaginationWithEFCoreAsNoTrackingAsync("price_desc", 1, 50, 75, 1000);
+            await _productRepository.InsertProductWithEFCoreAsync("New product", "New product description .......... ", 50, 150, DateTime.UtcNow);
         }
     }
 }

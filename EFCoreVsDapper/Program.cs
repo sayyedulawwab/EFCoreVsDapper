@@ -14,10 +14,12 @@ var serviceProvider = new ServiceCollection()
     .BuildServiceProvider();
 
 
-// do actual work here
+//// do actual work here
 var productRepository = serviceProvider.GetService<IProductRepository>();
 
-await productRepository.DeleteAllAsync();
-await productRepository.InsertAsync();
+//await productRepository.DeleteAllAsync();
+//await productRepository.InsertAsync();
 
 var summary = BenchmarkRunner.Run<BenchmarkEFCoreDapper>();
+
+await productRepository.CleanUpInsertedManually();
