@@ -28,7 +28,7 @@ public class DatabaseConnectionFactory : IDatabaseConnectionFactory
     {
         var builder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
-        builder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=TestEcomDB;Trusted_Connection=True;");
+        builder.UseSqlServer(_connectionString);
 
         return builder.Options;
     }

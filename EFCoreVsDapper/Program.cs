@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 
-var connectionString = @"Server=(localdb)\mssqllocaldb;Database=TestEcomDB;Trusted_Connection=True;";
+var connectionString = AppConfiguration.GetConnectionString();
 
 var serviceProvider = new ServiceCollection()
     .AddDbContext<ApplicationDbContext>(builder => builder.UseSqlServer(connectionString))
@@ -20,6 +20,6 @@ var productRepository = serviceProvider.GetService<IProductRepository>();
 //await productRepository.DeleteAllAsync();
 //await productRepository.InsertAsync();
 
-var summary = BenchmarkRunner.Run<BenchmarkEFCoreDapper>();
+var summary = BenchmarkRunner.Run<BenchmarkEFCoreDapper>(args: args);
 
 await productRepository.CleanUpInsertedManually();

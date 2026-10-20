@@ -16,7 +16,10 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=TestEcomDB;Trusted_Connection=True;");
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer(AppConfiguration.GetConnectionString());
+        }
     }
 
 }

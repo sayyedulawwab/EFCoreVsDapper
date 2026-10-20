@@ -8,9 +8,11 @@ namespace EFCoreVsDapper;
 public class BenchmarkEFCoreDapper
 {
 
+    private static readonly string connectionString = AppConfiguration.GetConnectionString();
+
     private readonly ServiceProvider serviceProvider = new ServiceCollection()
-                    .AddDbContext<ApplicationDbContext>(builder => builder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=TestEcomDB;Trusted_Connection=True;"))
-                    .AddScoped<IDatabaseConnectionFactory>(_ => new DatabaseConnectionFactory(@"Server=(localdb)\mssqllocaldb;Database=TestEcomDB;Trusted_Connection=True;"))
+                    .AddDbContext<ApplicationDbContext>(builder => builder.UseSqlServer(connectionString))
+                    .AddScoped<IDatabaseConnectionFactory>(_ => new DatabaseConnectionFactory(connectionString))
                     .AddTransient<IProductRepository, ProductRepository>()
                     .BuildServiceProvider();
 
